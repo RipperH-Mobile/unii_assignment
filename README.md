@@ -1,9 +1,5 @@
 # unii_test
 
-A new Flutter project.
-
-https://github.com/user-attachments/assets/e5569960-cedc-440f-87c8-38036ccddb20
-
 <div align="center">
   <h3>Application Demo</h3>
   <video src="https://github.com/user-attachments/assets/e5569960-cedc-440f-87c8-38036ccddb20" width="320" controls muted autoplay loop>
