@@ -60,12 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      _searchController.clear();
-                      context.read<CoinBloc>().add(SearchCoins(""));
-                    },
-                  )
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            context.read<CoinBloc>().add(SearchCoins(""));
+                          },
+                        )
                       : null,
                   filled: true,
                   fillColor: Colors.grey[200],
@@ -92,10 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
 
                     return RefreshIndicator(
-                      onRefresh: () async =>
-                          context.read<CoinBloc>().add(
-                            FetchCoins(isRefresh: true),
-                          ),
+                      onRefresh: () async => context.read<CoinBloc>().add(
+                        FetchCoins(isRefresh: true),
+                      ),
                       child: OrientationBuilder(
                         builder: (context, orientation) {
                           bool isLandscape =
@@ -130,36 +129,33 @@ class _HomeScreenState extends State<HomeScreen> {
                               if (!isLandscape)
                                 SliverList(
                                   delegate: SliverChildBuilderDelegate(
-                                        (context, index) =>
-                                        CoinCard(
-                                          coin: state.coins[index],
-                                          onTap: () =>
-                                              _showDetail(
-                                                context,
-                                                state.coins[index],
-                                              ),
-                                        ),
+                                    (context, index) => CoinCard(
+                                      coin: state.coins[index],
+                                      onTap: () => _showDetail(
+                                        context,
+                                        state.coins[index],
+                                      ),
+                                    ),
                                     childCount: state.coins.length,
                                   ),
                                 )
                               else
-                                SliverGrid(
-                                  gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    childAspectRatio: 1.2,
-                                  ),
-                                  delegate: SliverChildBuilderDelegate(
-                                        (context, index) =>
-                                        CoinCard(
-                                          coin: state.coins[index],
-                                          onTap: () =>
-                                              _showDetail(
-                                                context,
-                                                state.coins[index],
-                                              ),
-                                        ),
-                                    childCount: state.coins.length,
+                                SliverPadding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                  sliver: SliverGrid(
+                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,         // แสดง 3 รายการตามภาพที่คุณระบุ
+                                      mainAxisSpacing: 12,       // ระยะห่างระหว่างแถว
+                                      crossAxisSpacing: 12,      // ระยะห่างระหว่างคอลัมน์
+                                      childAspectRatio: 2.2,     // <--- ปรับค่าเพิ่มขึ้น (เช่น 2.0 - 2.5) เพื่อให้การ์ดดูแบนและพอดีกับเนื้อหา
+                                    ),
+                                    delegate: SliverChildBuilderDelegate(
+                                          (context, index) => CoinCard(
+                                        coin: state.coins[index],
+                                        onTap: () => _showDetail(context, state.coins[index]),
+                                      ),
+                                      childCount: state.coins.length,
+                                    ),
                                   ),
                                 ),
 
@@ -198,99 +194,96 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) =>
-          Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      builder: (context) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(width: 40, height: 4, color: Colors.grey[300]),
             ),
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 20),
+            Row(
               children: [
-                Center(
-                  child: Container(
-                      width: 40, height: 4, color: Colors.grey[300]),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Image.network(
-                      coin.iconUrl,
-                      width: 50,
-                      height: 50,
-                      errorBuilder: (c, e, s) =>
+                Image.network(
+                  coin.iconUrl,
+                  width: 50,
+                  height: 50,
+                  errorBuilder: (c, e, s) =>
                       const Icon(Icons.generating_tokens),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              "${coin.name} ",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: hexToColor(coin.color),
-                              ),
-                            ),
-                            Text(
-                              "(${coin.symbol})",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
                         Text(
-                          "PRICE  \$ ${double.parse(coin.price).toStringAsFixed(
-                              2)}",
-                          style: const TextStyle(
+                          "${coin.name} ",
+                          style: TextStyle(
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
+                            color: hexToColor(coin.color),
                           ),
                         ),
                         Text(
-                          "MARKET CAP  ${formatMarketCap(coin.marketCap)}",
-                          style: const TextStyle(
+                          "(${coin.symbol})",
+                          style: TextStyle(
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  coin.description ?? "No description available.",
-                  maxLines: 10,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.grey[600], height: 1.5),
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () {
-                      launchURL(coin.websiteUrl ?? "https://www.unii.co.th");
-                    },
-                    child: const Text(
-                      "GO TO WEBSITE",
-                      style: TextStyle(
-                        color: Colors.purple,
+                    Text(
+                      "PRICE  \$ ${double.parse(coin.price).toStringAsFixed(2)}",
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
                     ),
-                  ),
+                    Text(
+                      "MARKET CAP  ${formatMarketCap(coin.marketCap)}",
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
+            const SizedBox(height: 16),
+            Text(
+              coin.description ?? "No description available.",
+              maxLines: 10,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.grey[600], height: 1.5),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () {
+                  launchURL(coin.websiteUrl ?? "https://www.unii.co.th");
+                },
+                child: const Text(
+                  "GO TO WEBSITE",
+                  style: TextStyle(
+                    color: Colors.purple,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
